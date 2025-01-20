@@ -7,16 +7,16 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Company>Moonrise Software LLC</Company>
-		<Version>9.0.0.5</Version>
-		<AssemblyVersion>9.0.0.5</AssemblyVersion>
-		<FileVersion>9.0.0.5</FileVersion>
-		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+		<Version>9.0.1.0</Version>
+		<AssemblyVersion>9.0.1.0</AssemblyVersion>
+		<FileVersion>9.0.1.0</FileVersion>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<RepositoryUrl></RepositoryUrl>
+		<RepositoryUrl>https://github.com/MoonriseSoftwareCalifornia/Cosmos.EmailServices</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>SMTP, SendGrid, Azure Email, Email Provider, Identity</PackageTags>
+		<PackageTags>SMTP, SendGrid, Azure Email, Email Provider, Identity, ASP.NET Identity</PackageTags>
 		<Description>This is a SendGrid, SMTP, and Azure Communications Email Provider for ASP.NET Core Identity.</Description>
-		<PackageProjectUrl></PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/MoonriseSoftwareCalifornia/CosmosCMS</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageReleaseNotes>Documentation dependencies updated.</PackageReleaseNotes>
 		<Title>Cosmos CMS Email Services</Title>
@@ -33,17 +33,26 @@
 
 	<PropertyGroup>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<PackageIcon>B2C_BrandIcon_Black.png</PackageIcon>
+		<IncludeSymbols>True</IncludeSymbols>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\Cosmos.BlobService\B2C_BrandIcon_Black.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
 	<ItemGroup>
 
 		<PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
 
-		<PackageReference Include="Azure.Identity" Version="1.13.1" />
+		<PackageReference Include="Azure.Identity" Version="1.13.2" />
 
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
 
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.1" />
 
 		<PackageReference Include="SendGrid" Version="9.29.3" />
 
@@ -52,7 +61,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

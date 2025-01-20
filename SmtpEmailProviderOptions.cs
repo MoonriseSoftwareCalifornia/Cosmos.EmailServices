@@ -33,7 +33,7 @@ namespace Cosmos.EmailServices
         public string? Password { get; set; }
 
         /// <summary>
-        /// Gets or sets sMTP Port.
+        /// Gets or sets SMTP Port.
         /// </summary>
         public int Port { get; set; }
 
