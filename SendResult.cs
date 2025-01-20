@@ -26,9 +26,9 @@ namespace Cosmos.EmailServices
         {
             get
             {
-                if (StatusCode >= HttpStatusCode.OK)
+                if (this.StatusCode >= HttpStatusCode.OK)
                 {
-                    return StatusCode <= (HttpStatusCode)299;
+                    return this.StatusCode <= (HttpStatusCode)299;
                 }
 
                 return false;

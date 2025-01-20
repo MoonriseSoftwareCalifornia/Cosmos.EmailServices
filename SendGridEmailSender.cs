@@ -31,7 +31,7 @@ namespace Cosmos.EmailServices
         {
             this.options = options;
             this.logger = logger;
-            SendResult = new SendResult();
+            this.SendResult = new SendResult();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Cosmos.EmailServices
         /// </summary>
         public bool SandboxMode
         {
-            get { return options.Value.SandboxMode; }
+            get { return this.options.Value.SandboxMode; }
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Cosmos.EmailServices
                 HtmlContent = htmlMessage
             };
 
-            var task = Execute(message, emailTo, emailFrom);
+            var task = this.Execute(message, emailTo, emailFrom);
             task.Wait();
 
             return task;
@@ -87,7 +87,7 @@ namespace Cosmos.EmailServices
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
         {
-            return SendEmailAsync(emailTo, subject, htmlMessage, null);
+            return this.SendEmailAsync(emailTo, subject, htmlMessage, null);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Cosmos.EmailServices
             message.HtmlContent = htmlVersion;
             message.Subject = subject;
 
-            var task = Execute(message, emailTo, emailFrom);
+            var task = this.Execute(message, emailTo, emailFrom);
             task.Wait();
 
             return task;
@@ -124,37 +124,37 @@ namespace Cosmos.EmailServices
         private async Task Execute(SendGridMessage message, string emailTo, string? emailFrom)
         {
             message.AddTo(new EmailAddress(emailTo));
-            message.SetFrom(new EmailAddress(emailFrom ?? options.Value.DefaultFromEmailAddress));
+            message.SetFrom(new EmailAddress(emailFrom ?? this.options.Value.DefaultFromEmailAddress));
 
             // Disable click tracking.
             // See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
             message.SetClickTracking(true, true);
 
             // Set the Sandbox mode if on.
-            if (options.Value.SandboxMode)
+            if (this.options.Value.SandboxMode)
             {
                 message.SetSandBoxMode(true);
             }
 
             try
             {
-                var client = new SendGridClient(options.Value);
+                var client = new SendGridClient(this.options.Value);
 
-                Response = await client.SendEmailAsync(message);
+                this.Response = await client.SendEmailAsync(message);
 
-                SendResult.StatusCode = Response.StatusCode;
-                SendResult.Message = await Response.Body.ReadAsStringAsync();
+                this.SendResult.StatusCode = this.Response.StatusCode;
+                this.SendResult.Message = await this.Response.Body.ReadAsStringAsync();
 
-                if (!Response.IsSuccessStatusCode && options.Value.LogErrors)
+                if (!this.Response.IsSuccessStatusCode && this.options.Value.LogErrors)
                 {
-                    logger.LogError(new Exception($"SendGrid status code: {Response.StatusCode}"), Response.Headers.ToString());
+                    this.logger.LogError(new Exception($"SendGrid status code: {this.Response.StatusCode}"), this.Response.Headers.ToString());
                 }
             }
             catch (Exception e)
             {
-                SendResult.StatusCode = HttpStatusCode.BadRequest;
-                SendResult.Message = e.Message;
-                logger.LogError(e, e.Message);
+                this.SendResult.StatusCode = HttpStatusCode.BadRequest;
+                this.SendResult.Message = e.Message;
+                this.logger.LogError(e, e.Message);
             }
         }
     }

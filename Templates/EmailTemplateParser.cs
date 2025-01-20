@@ -25,16 +25,16 @@ namespace Cosmos.EmailServices.Templates
 
             if (rm != null)
             {
-                Html = rm.GetObject(templateName) as string ?? string.Empty;
-                Text = rm.GetObject($"{templateName}TXT") as string ?? string.Empty;
+                this.Html = rm.GetObject(templateName) as string ?? string.Empty;
+                this.Text = rm.GetObject($"{templateName}TXT") as string ?? string.Empty;
             }
 
-            if (string.IsNullOrEmpty(Html))
+            if (string.IsNullOrEmpty(this.Html))
             {
                 throw new ArgumentException($"Html template '{templateName}' not found.");
             }
 
-            if (string.IsNullOrEmpty(Text))
+            if (string.IsNullOrEmpty(this.Text))
             {
                 throw new ArgumentException($"Text template '{templateName}TXT' not found.");
             }
@@ -62,8 +62,8 @@ namespace Cosmos.EmailServices.Templates
         /// </example>
         public void Insert(string key, string value)
         {
-            Html = Html.Replace("{{" + key + "}}", value);
-            Text = Text.Replace("{{" + key + "}}", value);
+            this.Html = this.Html.Replace("{{" + key + "}}", value);
+            this.Text = this.Text.Replace("{{" + key + "}}", value);
         }
 
         /// <summary>
@@ -73,12 +73,12 @@ namespace Cosmos.EmailServices.Templates
         /// <param name="value">The text value being inserted.</param>
         public void InsertHtml(string key, string value)
         {
-            Html = Html.Replace("{{" + key + "}}", value);
+            this.Html = this.Html.Replace("{{" + key + "}}", value);
 
             var doc = new HtmlDocument();
-            doc.LoadHtml(Html);
+            doc.LoadHtml(this.Html);
 
-            Text = Text.Replace("{{" + key + "}}", doc.DocumentNode.InnerText);
+            this.Text = this.Text.Replace("{{" + key + "}}", doc.DocumentNode.InnerText);
         }
     }
 }

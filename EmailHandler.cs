@@ -74,7 +74,7 @@ namespace Cosmos.EmailServices
                     break;
             }
 
-            var parser = GetParser(templateName);
+            var parser = this.GetParser(templateName);
 
             parser.Insert("CallbackUrl", callbackUrl);
             parser.Insert("WebsiteUrl", $"https://{hostname}");
@@ -82,12 +82,12 @@ namespace Cosmos.EmailServices
 
             if (parser.Html != null && parser.Text != null)
             {
-                await emailSender.SendEmailAsync(toEmail, subject, parser.Text, parser.Html, fromEmail);
-                logger.LogInformation($"Password reset Email request sent to: '{toEmail}'.");
+                await this.emailSender.SendEmailAsync(toEmail, subject, parser.Text, parser.Html, fromEmail);
+                this.logger.LogInformation($"Password reset Email request sent to: '{toEmail}'.");
             }
             else
             {
-                logger.LogInformation($"Failed to send password reset Email request sent to: '{toEmail}' because email parser failed to build message.");
+                this.logger.LogInformation($"Failed to send password reset Email request sent to: '{toEmail}' because email parser failed to build message.");
             }
         }
 
@@ -111,9 +111,9 @@ namespace Cosmos.EmailServices
             parser.Insert("WebsiteName", websiteName);
             parser.InsertHtml("Body", body);
 
-            await emailSender.SendEmailAsync(toEmail, subject, parser.Text, parser.Html, fromEmail);
+            await this.emailSender.SendEmailAsync(toEmail, subject, parser.Text, parser.Html, fromEmail);
 
-            logger.LogInformation($"Email with subject '{subject}' was sent to: '{toEmail}'");
+            this.logger.LogInformation($"Email with subject '{subject}' was sent to: '{toEmail}'");
         }
 
         /// <summary>
@@ -138,9 +138,9 @@ namespace Cosmos.EmailServices
 
             foreach (var email in toEmails)
             {
-                await emailSender.SendEmailAsync(email, subject, parser.Text, parser.Html, fromEmail);
+                await this.emailSender.SendEmailAsync(email, subject, parser.Text, parser.Html, fromEmail);
 
-                logger.LogInformation($"Email with subject '{subject}' was sent to: '{email}'");
+                this.logger.LogInformation($"Email with subject '{subject}' was sent to: '{email}'");
             }
         }
 

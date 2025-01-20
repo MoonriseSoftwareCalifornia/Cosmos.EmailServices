@@ -31,7 +31,7 @@ namespace Cosmos.EmailServices
                 throw new ConfigurationErrorsException("No SmtpEmailProviderOptions configuration found.");
             }
 
-            SendResult = new SendResult();
+            this.SendResult = new SendResult();
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Cosmos.EmailServices
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
         {
-            return SendEmailAsync(emailTo, subject, htmlMessage, null);
+            return this.SendEmailAsync(emailTo, subject, htmlMessage, null);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Cosmos.EmailServices
 
             if (string.IsNullOrEmpty(emailFrom))
             {
-                emailFrom = options.DefaultFromEmailAddress;
+                emailFrom = this.options.DefaultFromEmailAddress;
             }
 
             message.Subject = subject;
@@ -76,7 +76,7 @@ namespace Cosmos.EmailServices
             message.Body = htmlMessage;
             message.IsBodyHtml = true;
 
-            var task = Execute(message);
+            var task = this.Execute(message);
             task.Wait();
             return task;
         }
@@ -96,7 +96,7 @@ namespace Cosmos.EmailServices
 
             if (string.IsNullOrEmpty(emailFrom))
             {
-                emailFrom = options.DefaultFromEmailAddress;
+                emailFrom = this.options.DefaultFromEmailAddress;
             }
 
             message.Subject = subject;
@@ -118,19 +118,19 @@ namespace Cosmos.EmailServices
 
             message.Subject = subject;
 
-            var task = Execute(message);
+            var task = this.Execute(message);
             task.Wait();
             return task;
         }
 
         private async Task Execute(MailMessage message)
         {
-            var client = new SmtpClient(options.Host, options.Port);
+            var client = new SmtpClient(this.options.Host, this.options.Port);
 
-            if (!string.IsNullOrEmpty(options.Password))
+            if (!string.IsNullOrEmpty(this.options.Password))
             {
-                client.Credentials = new NetworkCredential(options.UserName, options.Password);
-                if (options.UsesSsl)
+                client.Credentials = new NetworkCredential(this.options.UserName, this.options.Password);
+                if (this.options.UsesSsl)
                 {
                     client.EnableSsl = true;
                 }
@@ -139,13 +139,13 @@ namespace Cosmos.EmailServices
             try
             {
                 await client.SendMailAsync(message);
-                SendResult.StatusCode = HttpStatusCode.OK;
-                SendResult.Message = "Email sent successfully.";
+                this.SendResult.StatusCode = HttpStatusCode.OK;
+                this.SendResult.Message = "Email sent successfully.";
             }
             catch (Exception ex)
             {
-                SendResult.StatusCode = HttpStatusCode.BadRequest;
-                SendResult.Message = ex.Message;
+                this.SendResult.StatusCode = HttpStatusCode.BadRequest;
+                this.SendResult.Message = ex.Message;
             }
 
             return;

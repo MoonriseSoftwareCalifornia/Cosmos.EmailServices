@@ -31,11 +31,11 @@ namespace Cosmos.EmailServices
         /// <remarks>Logging is sent to the ILogger interface.</remarks>
         public SendGridEmailProviderOptions(string apiKey, string? defaultFromEmailAddress, bool sandboxMode = false, bool logSuccesses = false, bool logErrors = true)
         {
-            ApiKey = apiKey;
-            DefaultFromEmailAddress = defaultFromEmailAddress;
-            SandboxMode = sandboxMode;
-            LogSuccesses = logSuccesses;
-            LogErrors = logErrors;
+            this.ApiKey = apiKey;
+            this.DefaultFromEmailAddress = defaultFromEmailAddress;
+            this.SandboxMode = sandboxMode;
+            this.LogSuccesses = logSuccesses;
+            this.LogErrors = logErrors;
         }
 
         /// <summary>

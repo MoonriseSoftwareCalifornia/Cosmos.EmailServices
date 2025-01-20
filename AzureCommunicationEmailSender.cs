@@ -35,8 +35,8 @@ namespace Cosmos.EmailServices
         {
             this.options = options;
             this.logger = logger;
-            credential = defaultAzureCredential;
-            SendResult = new SendResult();
+            this.credential = defaultAzureCredential;
+            this.SendResult = new SendResult();
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Cosmos.EmailServices
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage)
         {
-            await SendEmailAsync(toEmail, subject, htmlMessage, null);
+            await this.SendEmailAsync(toEmail, subject, htmlMessage, null);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Cosmos.EmailServices
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage, string? emailFrom)
         {
-            await SendEmailAsync(toEmail, subject, string.Empty, htmlMessage, emailFrom);
+            await this.SendEmailAsync(toEmail, subject, string.Empty, htmlMessage, emailFrom);
         }
 
         /// <summary>
@@ -80,32 +80,32 @@ namespace Cosmos.EmailServices
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task SendEmailAsync(string emailTo, string subject, string textVersion, string htmlVersion, string? emailFrom = null)
         {
-            var tempParts = options.Value.ConnectionString.Split(";").Where(w => !string.IsNullOrEmpty(w)).Select(part => part.Split('=')).ToDictionary(sp => sp[0], sp => sp[1], StringComparer.OrdinalIgnoreCase);
+            var tempParts = this.options.Value.ConnectionString.Split(";").Where(w => !string.IsNullOrEmpty(w)).Select(part => part.Split('=')).ToDictionary(sp => sp[0], sp => sp[1], StringComparer.OrdinalIgnoreCase);
             var tempEndPoint = tempParts["endpoint"];
 
             EmailClient emailClient;
-            SendResult = new SendResult();
+            this.SendResult = new SendResult();
 
             if (!tempParts.ContainsKey("AccessKey"))
             {
-                SendResult.StatusCode = HttpStatusCode.InternalServerError;
-                SendResult.Message = "AccessKey not found in connection string.";
-                logger.LogInformation(SendResult.Message);
+                this.SendResult.StatusCode = HttpStatusCode.InternalServerError;
+                this.SendResult.Message = "AccessKey not found in connection string.";
+                this.logger.LogInformation(this.SendResult.Message);
                 return;
             }
 
             if (tempParts["AccessKey"] == "AccessToken")
             {
-                emailClient = new EmailClient(endpoint: new Uri(tempEndPoint), credential);
+                emailClient = new EmailClient(endpoint: new Uri(tempEndPoint), this.credential);
             }
             else
             {
-                emailClient = new EmailClient(options.Value.ConnectionString);
+                emailClient = new EmailClient(this.options.Value.ConnectionString);
             }
 
             if (string.IsNullOrEmpty(emailFrom))
             {
-                emailFrom = options.Value.DefaultFromEmailAddress;
+                emailFrom = this.options.Value.DefaultFromEmailAddress;
             }
 
             EmailSendOperation result;
@@ -124,22 +124,22 @@ namespace Cosmos.EmailServices
 
             var response = result.GetRawResponse();
 
-            SendResult.StatusCode = (HttpStatusCode)response.Status;
+            this.SendResult.StatusCode = (HttpStatusCode)response.Status;
 
             if (result.Value.Status == EmailSendStatus.Succeeded)
             {
-                SendResult.Message = $"Email successfully sent to: {emailTo}; Subject: {subject};";
+                this.SendResult.Message = $"Email successfully sent to: {emailTo}; Subject: {subject};";
             }
             else if (result.Value.Status == EmailSendStatus.Failed)
             {
-                SendResult.Message = $"Email FAILED attempting to send to: {emailTo}, with subject: {subject}, with error: {response.ReasonPhrase}";
+                this.SendResult.Message = $"Email FAILED attempting to send to: {emailTo}, with subject: {subject}, with error: {response.ReasonPhrase}";
             }
             else if (result.Value.Status == EmailSendStatus.Canceled)
             {
-                SendResult.Message = $"Email was CANCELED to: {emailTo}, with subject: {subject}, with reason: {response.ReasonPhrase}";
+                this.SendResult.Message = $"Email was CANCELED to: {emailTo}, with subject: {subject}, with reason: {response.ReasonPhrase}";
             }
 
-            logger.LogInformation(SendResult.Message);
+            this.logger.LogInformation(this.SendResult.Message);
         }
     }
 }
