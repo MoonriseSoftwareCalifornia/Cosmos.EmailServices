@@ -288,3 +288,48 @@ namespace Cosmos.Cms.Areas.Identity.Pages.Account
     }
 }
 ```
+
+## EMail Templates
+
+This package comes with a few Email templates that can be used to format
+emails.
+
+Each template consists of two files. One for HTML formatted email
+and another for text.
+
+Here are examples of two files found in the 'Templates' folder:
+
+GeneralInfo.html
+GeneralInfoTXT.txt
+
+Here is an example of the text file:
+
+```text
+{{Subject}}
+{{Subtitle}}
+From: {{WebsiteName}}
+
+{{Body}}
+
+
+```
+
+Note the double brackes.  This are spots in the email where content is inserted.
+
+If you add templates to this project, please add them to the `EmailTemplates.resx`
+file.
+
+Here is an example of how to use the general email templates in the code:
+
+```csharp
+
+await emailHandler.SendGeneralInfoTemplateEmail(
+    "Password was changed.",
+    "System Notification",
+    websiteName,
+    Request.Host.Host,
+    $"<p>This is a confirmation that your password was changed for website '{Request.Host.Host}' on {DateTime.UtcNow.ToString()} (UTC).</p>",
+    Input.Email);
+```
+
+For more options, see class `EmailHandler.cs`.
